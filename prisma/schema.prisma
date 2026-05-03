@@ -1,0 +1,104 @@
+generator client {
+  provider = "prisma-client"
+  output   = "./generated/client"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id                    String               @id @default(cuid())
+  username              String               @unique
+  password              String
+  realName              String?
+  gradeClass            String?
+  role                  String               @default("STUDENT") // "LEADER" or "STUDENT"
+  messages              Message[]
+  createdChannels       ChatChannel[]        @relation("ChannelCreator")
+  channelMemberships    ChannelMember[]
+  directThreadMemberships DirectThreadMember[]
+}
+
+model Announcement {
+  id        String   @id @default(cuid())
+  title     String
+  content   String   // Markdown
+  isPublic  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Knowledgebase {
+  id        String   @id @default(cuid())
+  title     String
+  slug      String   @unique
+  content   String   // Markdown
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Message {
+  id             String        @id @default(cuid())
+  text           String
+  userId         String
+  user           User          @relation(fields: [userId], references: [id])
+  channelId      String?
+  channel        ChatChannel?  @relation(fields: [channelId], references: [id])
+  directThreadId String?
+  directThread   DirectThread? @relation(fields: [directThreadId], references: [id])
+  attachments    ChatAttachment[]
+  createdAt      DateTime      @default(now())
+}
+
+model ChatAttachment {
+  id           String   @id @default(cuid())
+  messageId    String
+  message      Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  originalName String
+  storedName   String
+  mimeType     String
+  size         Int
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
+}
+
+model ChatChannel {
+  id          String          @id @default(cuid())
+  name        String
+  slug        String          @unique
+  description String?
+  isPrivate   Boolean         @default(false)
+  createdById String?
+  createdBy   User?           @relation("ChannelCreator", fields: [createdById], references: [id])
+  members     ChannelMember[]
+  messages    Message[]
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+}
+
+model ChannelMember {
+  channelId String
+  userId    String
+  channel   ChatChannel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([channelId, userId])
+}
+
+model DirectThread {
+  id        String               @id @default(cuid())
+  members   DirectThreadMember[]
+  messages  Message[]
+  createdAt DateTime             @default(now())
+  updatedAt DateTime             @updatedAt
+}
+
+model DirectThreadMember {
+  threadId String
+  userId   String
+  thread   DirectThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  user     User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([threadId, userId])
+}
