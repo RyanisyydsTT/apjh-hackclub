@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
@@ -5,12 +6,22 @@ import { Navbar } from "@/components/Navbar";
 import { prisma } from "@/lib/prisma";
 import { UserManagement } from "@/components/admin/UserManagement";
 import { ContentManagement } from "@/components/admin/ContentManagement";
-import { Users, FileText, BookOpen } from "lucide-react";
+import { Users, FileText } from "lucide-react";
+import type { ChatUser } from "@/lib/chat";
+
+export const metadata: Metadata = {
+  title: "管理面板",
+  description: "APJH Hack Club 管理面板。",
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 export default async function AdminPage() {
   const session = await getServerSession(authOptions);
 
-  if (!session || (session.user as any).role !== 'LEADER') {
+  if (!session || (session.user as ChatUser).role !== 'LEADER') {
     redirect("/");
   }
 

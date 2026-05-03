@@ -1,7 +1,22 @@
+import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { Navbar } from "@/components/Navbar";
 import Link from "next/link";
 import { Book, ChevronRight } from "lucide-react";
+import { absoluteUrl } from "@/lib/seo";
+
+export const metadata: Metadata = {
+  title: "社團知識庫",
+  description: "APJH Hack Club 知識庫：AI 輔助開發、資安、網頁開發與駭客文化學習資源。",
+  alternates: {
+    canonical: "/kb",
+  },
+  openGraph: {
+    title: "社團知識庫 | APJH Hack Club",
+    description: "閱讀 APJH Hack Club 的課程大綱、資安觀念與程式創作學習筆記。",
+    url: absoluteUrl("/kb"),
+  },
+};
 
 export default async function KBPage() {
   const articles = await prisma.knowledgebase.findMany({

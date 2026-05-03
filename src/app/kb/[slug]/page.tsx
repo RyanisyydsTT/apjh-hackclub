@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { Navbar } from "@/components/Navbar";
 import ReactMarkdown from "react-markdown";
@@ -5,8 +6,54 @@ import remarkGfm from "remark-gfm";
 import { ArrowLeft, BookOpen } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { absoluteUrl, excerptMarkdown } from "@/lib/seo";
 
-export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
+type ArticlePageProps = {
+  params: Promise<{ slug: string }>;
+};
+
+export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const article = await prisma.knowledgebase.findUnique({
+    where: { slug },
+    select: {
+      title: true,
+      content: true,
+      updatedAt: true,
+    },
+  });
+
+  if (!article) {
+    return {
+      title: "找不到文章",
+      robots: { index: false, follow: false },
+    };
+  }
+
+  const description = excerptMarkdown(article.content);
+
+  return {
+    title: article.title,
+    description,
+    alternates: {
+      canonical: `/kb/${slug}`,
+    },
+    openGraph: {
+      type: "article",
+      title: `${article.title} | APJH Hack Club`,
+      description,
+      url: absoluteUrl(`/kb/${slug}`),
+      modifiedTime: article.updatedAt.toISOString(),
+    },
+    twitter: {
+      card: "summary",
+      title: article.title,
+      description,
+    },
+  };
+}
+
+export default async function ArticlePage({ params }: ArticlePageProps) {
   const { slug } = await params;
   const article = await prisma.knowledgebase.findUnique({
     where: { slug }

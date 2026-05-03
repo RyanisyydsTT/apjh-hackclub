@@ -1,10 +1,25 @@
+import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { Navbar } from "@/components/Navbar";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { Bell, Lock, Calendar, Globe, Megaphone } from "lucide-react";
+import { Lock, Calendar, Globe, Megaphone } from "lucide-react";
+import { absoluteUrl } from "@/lib/seo";
+
+export const metadata: Metadata = {
+  title: "社團公告",
+  description: "查看 APJH Hack Club 最新活動資訊、工作坊安排與社團公告。",
+  alternates: {
+    canonical: "/announcements",
+  },
+  openGraph: {
+    title: "社團公告 | APJH Hack Club",
+    description: "APJH Hack Club 最新活動資訊與工作坊安排。",
+    url: absoluteUrl("/announcements"),
+  },
+};
 
 export default async function AnnouncementsPage() {
   const session = await getServerSession(authOptions);
@@ -77,7 +92,14 @@ export default async function AnnouncementsPage() {
   );
 }
 
-function AnnouncementCard({ announcement, isPrivate = false }: { announcement: any, isPrivate?: boolean }) {
+type AnnouncementItem = {
+  title: string;
+  content: string;
+  isPublic: boolean;
+  createdAt: Date | string;
+};
+
+function AnnouncementCard({ announcement, isPrivate = false }: { announcement: AnnouncementItem, isPrivate?: boolean }) {
   return (
     <article className={`group relative bg-white p-8 md:p-12 rounded-[2.5rem] shadow-xl shadow-slate-200/40 border transition-all hover:-translate-y-1 hover:shadow-2xl ${
       isPrivate ? 'border-amber-100 hover:border-amber-300' : 'border-slate-100 hover:border-[#ec3750]/20'

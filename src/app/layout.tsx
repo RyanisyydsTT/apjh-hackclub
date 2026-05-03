@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { NextAuthProvider } from "@/components/NextAuthProvider";
+import { absoluteUrl, seoKeywords, siteDescription, siteName, siteUrl } from "@/lib/seo";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,8 +15,47 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "安平國中程式創作工作坊 Hack Club",
-  description: "APJH Hack Club - A place for makers.",
+  metadataBase: new URL(siteUrl),
+  applicationName: siteName,
+  title: {
+    default: "安平國中程式創作工作坊 Hack Club",
+    template: `%s | ${siteName}`,
+  },
+  description: siteDescription,
+  keywords: seoKeywords,
+  authors: [{ name: "APJH Hack Club" }],
+  creator: "APJH Hack Club",
+  publisher: "APJH Hack Club",
+  alternates: {
+    canonical: "/",
+    languages: {
+      "zh-TW": "/",
+    },
+  },
+  openGraph: {
+    type: "website",
+    locale: "zh_TW",
+    url: absoluteUrl("/"),
+    siteName,
+    title: "安平國中程式創作工作坊 Hack Club",
+    description: siteDescription,
+  },
+  twitter: {
+    card: "summary",
+    title: "安平國中程式創作工作坊 Hack Club",
+    description: siteDescription,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-snippet": -1,
+      "max-image-preview": "large",
+      "max-video-preview": -1,
+    },
+  },
 };
 
 export default function RootLayout({
