@@ -1,13 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { FileUp, Trash2, Globe, Lock } from "lucide-react";
+import { FileUp, Trash2 } from "lucide-react";
 
 type AnnouncementItem = {
   id: string;
   title: string;
   content: string;
-  isPublic: boolean;
   createdAt: Date | string;
 };
 
@@ -24,7 +23,7 @@ export const ContentManagement = ({ initialAnnouncements, initialArticles }: { i
   const [announcements, setAnnouncements] = useState(initialAnnouncements);
   const [articles, setArticles] = useState(initialArticles);
   
-  const [newAnn, setNewAnn] = useState({ title: "", content: "", isPublic: true });
+  const [newAnn, setNewAnn] = useState({ title: "", content: "" });
   const [newArt, setNewArt] = useState({ title: "", slug: "", content: "" });
 
   const readMarkdownFile = async (file: File, onRead: (content: string) => void) => {
@@ -41,7 +40,7 @@ export const ContentManagement = ({ initialAnnouncements, initialArticles }: { i
     if (res.ok) {
       const created = await res.json();
       setAnnouncements([created, ...announcements]);
-      setNewAnn({ title: "", content: "", isPublic: true });
+      setNewAnn({ title: "", content: "" });
     }
   };
 
@@ -119,20 +118,9 @@ export const ContentManagement = ({ initialAnnouncements, initialArticles }: { i
                 }}
               />
             </label>
-            <div className="flex items-center gap-4">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={newAnn.isPublic}
-                  onChange={e => setNewAnn({...newAnn, isPublic: e.target.checked})}
-                  className="w-4 h-4 accent-[#ec3750]"
-                />
-                <span className="text-sm">公開發布</span>
-              </label>
-              <button type="submit" className="flex-grow bg-slate-900 text-white px-6 py-2 rounded-xl font-bold hover:bg-slate-800 transition-colors">
-                發布公告
-              </button>
-            </div>
+            <button type="submit" className="w-full bg-slate-900 text-white px-6 py-2 rounded-xl font-bold hover:bg-slate-800 transition-colors">
+              發布公告
+            </button>
           </form>
         </div>
 
@@ -142,7 +130,6 @@ export const ContentManagement = ({ initialAnnouncements, initialArticles }: { i
               <div>
                 <h4 className="font-bold text-slate-800">{ann.title}</h4>
                 <div className="flex items-center gap-2 mt-1">
-                  {ann.isPublic ? <Globe className="w-3 h-3 text-green-500" /> : <Lock className="w-3 h-3 text-amber-500" />}
                   <span className="text-xs text-slate-400">{new Date(ann.createdAt).toLocaleDateString('zh-TW')}</span>
                 </div>
               </div>

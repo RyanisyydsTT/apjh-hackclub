@@ -1,6 +1,6 @@
 "use client";
 
-import { CalendarDays, Clock3, Rocket } from "lucide-react";
+import { CalendarDays } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const launchDate = new Date("2026-09-01T00:00:00+08:00");
@@ -48,53 +48,30 @@ export function CountdownCard() {
   ];
 
   return (
-    <div className="relative mx-auto mb-12 max-w-4xl overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.07] p-4 text-left shadow-2xl shadow-black/30 backdrop-blur-xl md:p-5">
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/60 to-transparent" />
-      <div className="absolute -right-16 -top-16 h-40 w-40 rounded-full bg-[#ec3750]/30 blur-3xl" />
-      <div className="absolute -bottom-20 left-10 h-44 w-44 rounded-full bg-blue-500/20 blur-3xl" />
-
-      <div className="relative grid gap-5 lg:grid-cols-[1fr_auto] lg:items-center">
-        <div className="flex items-start gap-4">
-          <div className="mt-1 flex h-12 w-12 flex-none items-center justify-center rounded-2xl bg-[#ec3750] text-white shadow-lg shadow-red-900/30">
-            <Rocket className="h-6 w-6" />
-          </div>
-          <div>
-            <div className="pixel-label mb-2 flex items-center gap-2 text-xs font-black text-[#ff8c37]">
-              <Clock3 className="h-4 w-4" />
-              Launch Countdown
-            </div>
-            <h2 className="text-2xl font-black tracking-tight text-white md:text-3xl">
-              距離 2026 秋季正式啟動
-            </h2>
-            <p className="mt-2 max-w-2xl text-sm font-medium leading-relaxed text-slate-300 md:text-base">
-              第一批社員、第一批作品、第一個真正上線的校園專案，正在倒數。
-            </p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-4 gap-2 sm:gap-3">
-          {units.map((unit) => (
-            <div
-              key={unit.label}
-              className="flex h-24 min-w-0 flex-col items-center justify-center rounded-2xl border border-white/10 bg-slate-950/55 px-2 shadow-inner shadow-black/40 sm:h-28 sm:w-24"
-            >
-              <div className="pixel-heading text-2xl font-black text-white sm:text-4xl">
-                {unit.value}
-              </div>
-              <div className="pixel-label mt-2 text-[0.65rem] font-black text-slate-400 sm:text-xs">
-                {unit.label}
-              </div>
-            </div>
-          ))}
-        </div>
+    <div className="brut-flat mx-auto grid max-w-5xl gap-6 p-6 text-left md:p-8 lg:grid-cols-[1fr_auto] lg:items-center">
+      <div>
+        <h2 className="display text-2xl text-ink md:text-3xl">距離 2026 秋季社課啟動</h2>
+        <p className="mt-3 max-w-2xl font-medium leading-relaxed text-ink-soft">
+          每週一第七、八節，一起用 AI 與 GitHub Codespaces 做出自己的網站。
+        </p>
+        <p className="mt-4 flex items-center gap-2 text-sm font-bold text-ink-soft">
+          <CalendarDays className="h-4 w-4 text-accent" />
+          2026 年 9 月 1 日
+        </p>
       </div>
 
-      <div className="relative mt-5 flex items-center justify-between gap-4 rounded-2xl border border-white/10 bg-slate-950/35 px-4 py-3 text-xs font-bold text-slate-300 sm:text-sm">
-        <span className="flex items-center gap-2">
-          <CalendarDays className="h-4 w-4 text-[#ec3750]" />
-          目標日期：2026 / 09 / 01
-        </span>
-        <span className="hidden text-[#33d6a6] sm:inline">Asia/Taipei</span>
+      <div className="grid grid-cols-4 gap-0.5 border-2 border-line bg-line">
+        {units.map((unit) => (
+          <div
+            key={unit.label}
+            className="flex h-24 min-w-0 flex-col items-center justify-center bg-ink px-2 text-paper sm:h-28 sm:w-24"
+          >
+            <span className="display text-3xl tabular-nums sm:text-4xl" suppressHydrationWarning>
+              {unit.value}
+            </span>
+            <span className="stencil mt-2 text-[0.6rem] opacity-70 sm:text-xs">{unit.label}</span>
+          </div>
+        ))}
       </div>
     </div>
   );

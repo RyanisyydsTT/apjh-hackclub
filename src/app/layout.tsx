@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { NextAuthProvider } from "@/components/NextAuthProvider";
+import { Footer } from "@/components/Footer";
 import { absoluteUrl, seoKeywords, siteDescription, siteName, siteUrl } from "@/lib/seo";
 
 const geistSans = Geist({
@@ -16,16 +17,21 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
+  icons: {
+    icon: [{ url: "/apjhirc-logo.svg", type: "image/svg+xml" }],
+    shortcut: "/apjhirc-logo.svg",
+    apple: "/apjhirc-logo.svg",
+  },
   applicationName: siteName,
   title: {
-    default: "安平國中程式創作工作坊 Hack Club",
+    default: siteName,
     template: `%s | ${siteName}`,
   },
   description: siteDescription,
   keywords: seoKeywords,
-  authors: [{ name: "APJH Hack Club" }],
-  creator: "APJH Hack Club",
-  publisher: "APJH Hack Club",
+  authors: [{ name: "APJHIRC" }],
+  creator: "APJHIRC",
+  publisher: "APJHIRC",
   alternates: {
     canonical: "/",
     languages: {
@@ -37,12 +43,12 @@ export const metadata: Metadata = {
     locale: "zh_TW",
     url: absoluteUrl("/"),
     siteName,
-    title: "安平國中程式創作工作坊 Hack Club",
+    title: siteName,
     description: siteDescription,
   },
   twitter: {
     card: "summary",
-    title: "安平國中程式創作工作坊 Hack Club",
+    title: siteName,
     description: siteDescription,
   },
   robots: {
@@ -87,9 +93,10 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-full flex flex-col bg-slate-50 text-slate-900">
+      <body className="min-h-full flex flex-col bg-paper text-ink">
         <NextAuthProvider>
           {children}
+          <Footer />
         </NextAuthProvider>
       </body>
     </html>

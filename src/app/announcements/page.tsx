@@ -1,88 +1,57 @@
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { Navbar } from "@/components/Navbar";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "../api/auth/[...nextauth]/route";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { Lock, Calendar, Globe, Megaphone } from "lucide-react";
+import { Calendar, Megaphone } from "lucide-react";
 import { absoluteUrl } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "社團公告",
-  description: "查看 APJH Hack Club 最新活動資訊、工作坊安排與社團公告。",
+  description: "查看 APJHIRC 安平國中資訊研究社最新活動資訊、工作坊安排與社團公告。",
   alternates: {
     canonical: "/announcements",
   },
   openGraph: {
-    title: "社團公告 | APJH Hack Club",
-    description: "APJH Hack Club 最新活動資訊與工作坊安排。",
+    title: "社團公告 | APJHIRC",
+    description: "APJHIRC 安平國中資訊研究社最新活動資訊與工作坊安排。",
     url: absoluteUrl("/announcements"),
   },
 };
 
 export default async function AnnouncementsPage() {
-  const session = await getServerSession(authOptions);
-  
-  const publicAnnouncements = await prisma.announcement.findMany({
-    where: { isPublic: true },
+  const announcements = await prisma.announcement.findMany({
     orderBy: { createdAt: 'desc' }
   });
-
-  const privateAnnouncements = session ? await prisma.announcement.findMany({
-    where: { isPublic: false },
-    orderBy: { createdAt: 'desc' }
-  }) : [];
 
   return (
     <div className="flex flex-col min-h-screen bg-slate-50">
       <Navbar />
       
-      {/* Page Header */}
-      <header className="bg-slate-900 pt-32 pb-20 px-4 text-center">
-        <div className="max-w-4xl mx-auto">
-          <div className="inline-flex p-4 rounded-3xl bg-[#ec3750]/10 text-[#ec3750] mb-6">
-            <Megaphone className="w-10 h-10" />
+      <header className="relative overflow-hidden bg-slate-950 px-4 pb-16 pt-32 text-center">
+        <div className="absolute -left-24 top-16 h-64 w-64 rounded-full bg-[#ec3750]/20 blur-3xl" />
+        <div className="relative mx-auto max-w-4xl">
+          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.06] px-4 py-2 text-sm font-black text-[#ff7185]">
+            <Megaphone className="h-4 w-4" />
+            WHAT&apos;S NEW
           </div>
-          <h1 className="text-5xl font-black text-white mb-4 tracking-tight">社團公告</h1>
-          <p className="text-xl text-slate-400 font-medium">獲取最新活動資訊與工作坊安排</p>
+          <h1 className="text-4xl font-black tracking-tight text-white sm:text-5xl">社團公告</h1>
+          <p className="mt-4 text-lg font-medium text-slate-400">活動資訊、工作坊安排與重要提醒，都在這裡。</p>
         </div>
       </header>
 
-      <main className="flex-grow max-w-5xl mx-auto w-full px-4 pb-4 pt-12 md:px-8 md:pb-8 md:pt-16 relative z-10">
+      <main className="relative z-10 mx-auto w-full max-w-5xl flex-grow px-4 py-14 md:px-8 md:py-16">
         <div className="grid gap-12">
-          {session && privateAnnouncements.length > 0 && (
-            <section>
-              <div className="flex items-center gap-3 mb-8 px-4">
-                <div className="p-2 bg-amber-100 rounded-xl text-amber-600">
-                  <Lock className="w-6 h-6" />
-                </div>
-                <h2 className="text-3xl font-black text-slate-800">內部公告</h2>
-              </div>
-              <div className="space-y-8">
-                {privateAnnouncements.map((ann) => (
-                  <AnnouncementCard key={ann.id} announcement={ann} isPrivate />
-                ))}
-              </div>
-            </section>
-          )}
-
           <section>
-            <div className="flex items-center gap-3 mb-8 px-4">
-              <div className="p-2 bg-blue-100 rounded-xl text-blue-600">
-                <Globe className="w-6 h-6" />
-              </div>
-              <h2 className="text-3xl font-black text-slate-800">公開公告</h2>
-            </div>
-            {publicAnnouncements.length > 0 ? (
+            {announcements.length > 0 ? (
               <div className="space-y-8">
-                {publicAnnouncements.map((ann) => (
+                {announcements.map((ann) => (
                   <AnnouncementCard key={ann.id} announcement={ann} />
                 ))}
               </div>
             ) : (
               <div className="bg-white p-12 rounded-[2.5rem] border border-slate-100 text-center shadow-xl shadow-slate-200/50">
-                <p className="text-slate-400 text-lg font-bold italic">目前沒有公開公告。</p>
+                <p className="text-slate-400 text-lg font-bold italic">目前沒有公告。</p>
               </div>
             )}
           </section>
@@ -95,25 +64,20 @@ export default async function AnnouncementsPage() {
 type AnnouncementItem = {
   title: string;
   content: string;
-  isPublic: boolean;
   createdAt: Date | string;
 };
 
-function AnnouncementCard({ announcement, isPrivate = false }: { announcement: AnnouncementItem, isPrivate?: boolean }) {
+function AnnouncementCard({ announcement }: { announcement: AnnouncementItem }) {
   return (
-    <article className={`group relative bg-white p-8 md:p-12 rounded-[2.5rem] shadow-xl shadow-slate-200/40 border transition-all hover:-translate-y-1 hover:shadow-2xl ${
-      isPrivate ? 'border-amber-100 hover:border-amber-300' : 'border-slate-100 hover:border-[#ec3750]/20'
-    }`}>
+    <article className="group relative rounded-2xl border border-slate-200 bg-white p-7 shadow-sm transition hover:border-[#ec3750]/30 hover:shadow-xl md:p-10">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
           <div className="flex items-center gap-2 mb-2">
-             <span className={`px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest ${
-               isPrivate ? 'bg-amber-100 text-amber-600' : 'bg-blue-100 text-blue-600'
-             }`}>
-               {isPrivate ? 'Internal' : 'Public'}
+             <span className="px-3 py-1 rounded-full bg-blue-100 text-xs font-black uppercase tracking-widest text-blue-600">
+               APJHIRC
              </span>
           </div>
-          <h3 className="text-3xl font-black text-slate-800 tracking-tight">{announcement.title}</h3>
+          <h2 className="text-2xl font-black tracking-tight text-slate-900 md:text-3xl">{announcement.title}</h2>
         </div>
         <div className="flex items-center gap-2 text-slate-400 font-bold bg-slate-50 px-4 py-2 rounded-2xl whitespace-nowrap">
           <Calendar className="w-5 h-5" />
@@ -127,10 +91,7 @@ function AnnouncementCard({ announcement, isPrivate = false }: { announcement: A
         </ReactMarkdown>
       </div>
       
-      {/* Decorative side bar */}
-      <div className={`absolute left-0 top-12 bottom-12 w-1.5 rounded-r-full transition-colors ${
-        isPrivate ? 'bg-amber-400' : 'bg-[#ec3750]'
-      }`} />
+      <div className="absolute bottom-8 left-0 top-8 w-1 rounded-r-full bg-[#ec3750]" />
     </article>
   );
 }

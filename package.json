@@ -10,9 +10,14 @@
   },
   "dependencies": {
     "@prisma/adapter-better-sqlite3": "^7.8.0",
+    "@simplewebauthn/browser": "^13.2.2",
+    "@simplewebauthn/server": "^13.3.2",
     "@tailwindcss/typography": "^0.5.19",
+    "@types/qrcode": "^1.5.5",
     "better-sqlite3": "^12.9.0",
-    "next": "16.2.4",
+    "next": "^16.2.10",
+    "otplib": "^12.0.1",
+    "qrcode": "^1.5.4",
     "react": "19.2.4",
     "react-dom": "19.2.4"
   },
@@ -29,12 +34,16 @@
     "lucide-react": "^1.14.0",
     "next-auth": "^4.24.14",
     "prisma": "^7.8.0",
-    "pusher": "^5.3.3",
-    "pusher-js": "^8.5.0",
     "react-markdown": "^10.1.0",
     "remark-gfm": "^4.0.1",
     "tailwindcss": "^4",
     "tsx": "^4.21.0",
     "typescript": "^5"
+  },
+  "overrides": {
+    "postcss": "8.5.13",
+    "esbuild": "0.28.1",
+    "@hono/node-server": "1.19.13",
+    "uuid": "11.1.1"
   }
 }

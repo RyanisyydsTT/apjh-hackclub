@@ -1,19 +1,22 @@
-export const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://apjh-hackclub.vercel.app";
+export const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://hack.apjh.lol";
 
-export const siteName = "APJH Hack Club";
+export const siteName = "APJHIRC 安平國中資訊研究社";
 
 export const siteDescription =
-  "安平國中程式創作工作坊 Hack Club：學習 AI 輔助開發、資安觀念與實用網頁專案，打造 apps、websites、games 與校園工具。";
+  "APJHIRC 安平國中資訊研究社：以 AI、GitHub Codespaces 與 Vibe Coding 製作網站，學習網頁開發、資安觀念與專題實作。";
 
 export const seoKeywords = [
-  "APJH Hack Club",
+  "APJHIRC",
   "安平國中",
-  "Hack Club",
+  "安平國中資訊研究社",
   "程式創作",
   "程式設計",
+  "Vibe Coding",
+  "GitHub Codespaces",
   "AI 輔助開發",
   "網頁開發",
   "資安",
+  "Hack Club",
   "學生社團",
   "台南",
 ];
